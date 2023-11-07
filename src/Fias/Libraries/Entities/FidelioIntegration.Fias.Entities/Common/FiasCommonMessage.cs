@@ -243,7 +243,7 @@ public partial class FiasCommonMessage
 
         try
         {
-            using (FiasWriter writer = new(stringWriter, Indicator))
+            using (FiasJsonWriter writer = new(stringWriter, Indicator))
                 serializer.Serialize(writer, this);
 
             return stringWriter.ToString();

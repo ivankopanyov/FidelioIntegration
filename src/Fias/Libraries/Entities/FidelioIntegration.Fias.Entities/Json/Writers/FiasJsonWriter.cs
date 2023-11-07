@@ -1,6 +1,6 @@
 ﻿namespace FidelioIntegration.Fias.Entities.Json.Writers;
 
-internal class FiasWriter : JsonWriter
+internal class FiasJsonWriter : JsonWriter
 {
     private readonly TextWriter _writer;
 
@@ -8,7 +8,7 @@ internal class FiasWriter : JsonWriter
 
     private bool _isDelimeter = true;
 
-    public FiasWriter(TextWriter textWriter, string? indicator)
+    public FiasJsonWriter(TextWriter textWriter, string? indicator)
     {
         _writer = textWriter;
 
