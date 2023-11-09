@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{29
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Fias.Entities", "Fias\Libraries\Entities\FidelioIntegration.Fias.Entities\FidelioIntegration.Fias.Entities.csproj", "{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Fias", "Fias\FidelioIntegration.Fias\FidelioIntegration.Fias.csproj", "{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +50,6 @@ Global
 		{E69A4690-6AF9-466C-8E6F-2DAFBE377AE6} = {ECC15BD2-39A3-4198-9F8F-F91205F97845}
 		{29E89A90-057D-4D1D-88BF-8E412FDAA9CD} = {E69A4690-6AF9-466C-8E6F-2DAFBE377AE6}
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9} = {29E89A90-057D-4D1D-88BF-8E412FDAA9CD}
+		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19} = {ECC15BD2-39A3-4198-9F8F-F91205F97845}
 	EndGlobalSection
 EndGlobal
