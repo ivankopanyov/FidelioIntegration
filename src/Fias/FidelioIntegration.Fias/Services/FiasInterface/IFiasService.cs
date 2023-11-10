@@ -1,8 +1,12 @@
 ﻿namespace FidelioIntegration.Fias;
 
-public delegate void FiasMessageHandle<T>(T message);
+public delegate Task FiasMessageHandle<T>(T message);
 
-public delegate void FiasSendMessage(string message);
+public delegate Task FiasErrorHandle(string message, Exception? ex);
+
+public delegate Task FiasChangeConnectionStateHandle(bool isConnected, string? hostname, int? port);
+
+public delegate Task FiasSendMessageHandle(string message);
 
 public interface IFiasService
 {
@@ -33,23 +37,32 @@ public interface IFiasService
     event FiasMessageHandle<FiasPostingList>? FiasPostingListEvent;
     event FiasMessageHandle<FiasRemoteCheckOutResponse>? FiasRemoteCheckOutResponseEvent;
     event FiasMessageHandle<FiasRoomEquipmentStatusResponse>? FiasRoomEquipmentStatusResponseEvent;
-    event FiasMessageHandle<FiasCommonMessage>? UnknownTypeMessageEvent;
-    event FiasMessageHandle<string>? ErrorFromPmsMessageEvent;
-    event FiasMessageHandle<string>? ErrorToPmsMessageEvent;
-    event FiasMessageHandle<bool>? ChangeStateEvent;
+    event FiasMessageHandle<FiasCommonMessage>? FiasUnknownTypeMessageEvent;
 
-    internal event FiasSendMessage? SendMessageEvent;
+    event FiasErrorHandle? FiasErrorEvent;
+
+    event FiasChangeConnectionStateHandle? FiasChangeConnectionStateEvent;
+
+    internal event FiasSendMessageHandle? FiasSendMessageEvent;
+
+    bool IsRunning { get; set; }
+
+    string? Hostname { get; set; }
+
+    int Port { get; set; }
+
+    internal CancellationToken CancellationToken { get; }
 
     void Send(string message);
 
-    internal void UnknownTypeMessageEventInvoke(FiasCommonMessage message);
+    internal void RefreshCancellationToken();
 
     internal void MessageEventInvoke(object message);
 
-    internal void ErrorFromPmsMessageEventInvoke(string errorMessage);
+    internal void UnknownTypeMessageEventInvoke(FiasCommonMessage message);
 
-    internal void ErrorToPmsMessageEventInvoke(string errorMessage);
+    internal void ErrorEventInvoke(string errorMessage, Exception? ex = null);
 
-    internal void ChangeStateEventInvoke(bool isConnected);
+    internal void ChangeConnectionStateEventInvoke(bool isConnected, string? hostname = null, int? port = null);
 }
 

@@ -7,7 +7,6 @@ public static class FiasDependencyInjection
         serviceCollection.AddOptions<FiasDefaultConnectionOptions>()
             .Bind(configuration.GetSection(FiasDefaultConnectionOptions.SectionName));
 
-        serviceCollection.AddSingleton<IFiasConnectionService, FiasConnectionService>();
         serviceCollection.AddSingleton<IFiasService, FiasService>();
         serviceCollection.AddHostedService<FiasSocketClient>();
 

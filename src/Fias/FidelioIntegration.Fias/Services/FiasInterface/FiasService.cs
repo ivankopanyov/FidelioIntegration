@@ -2,6 +2,8 @@
 
 internal class FiasService : IFiasService
 {
+    #region Events
+
     public event FiasMessageHandle<FiasLinkStart>? FiasLinkStartEvent;
     public event FiasMessageHandle<FiasLinkAlive>? FiasLinkAliveEvent;
     public event FiasMessageHandle<FiasLinkEnd>? FiasLinkEndEvent;
@@ -30,13 +32,87 @@ internal class FiasService : IFiasService
     public event FiasMessageHandle<FiasRemoteCheckOutResponse>? FiasRemoteCheckOutResponseEvent;
     public event FiasMessageHandle<FiasRoomEquipmentStatusResponse>? FiasRoomEquipmentStatusResponseEvent;
     public event FiasMessageHandle<FiasCommonMessage>? UnknownTypeMessageEvent;
-    public event FiasMessageHandle<string>? ErrorFromPmsMessageEvent;
-    public event FiasMessageHandle<string>? ErrorToPmsMessageEvent;
-    public event FiasMessageHandle<bool>? ChangeStateEvent;
+    public event FiasMessageHandle<FiasCommonMessage>? FiasUnknownTypeMessageEvent;
 
-    public event FiasSendMessage? SendMessageEvent;
+    public event FiasErrorHandle? FiasErrorEvent;
 
-    public void Send(string message) => SendMessageEvent?.Invoke(message);
+    public event FiasChangeConnectionStateHandle? FiasChangeConnectionStateEvent;
+
+    public event FiasSendMessageHandle? FiasSendMessageEvent;
+
+    #endregion
+
+    private bool _isRunning;
+
+    private string? _hostname;
+
+    private int _port;
+
+    private CancellationTokenSource _cancellationTokenSource;
+
+    private CancellationToken _cancellationToken;
+
+    public bool IsRunning
+    {
+        get => _isRunning;
+
+        set
+        {
+            if (value != _isRunning)
+            {
+                _isRunning = value;
+                _cancellationTokenSource.Cancel();
+            }
+        }
+    }
+
+    public string? Hostname
+    {
+        get => _hostname;
+
+        set
+        {
+            if (value != _hostname)
+            {
+                _hostname = value;
+                _cancellationTokenSource.Cancel();
+            }
+        }
+    }
+
+    public int Port
+    {
+        get => _port;
+
+        set
+        {
+            if (value != _port)
+            {
+                _port = value;
+                _cancellationTokenSource.Cancel();
+            }
+        }
+    }
+
+    public CancellationToken CancellationToken => _cancellationToken;
+
+    public FiasService() => RefreshCancellationToken();
+
+    public FiasService(IOptions<FiasDefaultConnectionOptions> options) : this()
+    {
+        var defaultOptions = options.Value;
+        _hostname = defaultOptions.DefaultHostname;
+        _port = defaultOptions.DefaultPort;
+        _isRunning = defaultOptions.DefaultRunning;
+    }
+
+    public void RefreshCancellationToken()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        _cancellationToken = _cancellationTokenSource.Token;
+    }
+
+    public void Send(string message) => FiasSendMessageEvent?.Invoke(message);
 
     public void MessageEventInvoke(object message)
     {
@@ -126,12 +202,13 @@ internal class FiasService : IFiasService
         }
     }
 
-    public void UnknownTypeMessageEventInvoke(FiasCommonMessage message) => UnknownTypeMessageEvent?.Invoke(message);
+    public void UnknownTypeMessageEventInvoke(FiasCommonMessage message) =>
+        UnknownTypeMessageEvent?.Invoke(message);
 
-    public void ErrorFromPmsMessageEventInvoke(string errorMessage) => ErrorFromPmsMessageEvent?.Invoke(errorMessage);
+    public void ErrorEventInvoke(string errorMessage, Exception? ex = null) =>
+        FiasErrorEvent?.Invoke(errorMessage, ex);
 
-    public void ErrorToPmsMessageEventInvoke(string errorMessage) => ErrorToPmsMessageEvent?.Invoke(errorMessage);
-
-    public void ChangeStateEventInvoke(bool isConnected) => ChangeStateEvent?.Invoke(isConnected);
+    public void ChangeConnectionStateEventInvoke(bool isConnected, string? hostname = null, int? port = null) =>
+        FiasChangeConnectionStateEvent?.Invoke(isConnected, hostname, port);
 }
 

@@ -8,108 +8,125 @@ internal class FiasSocketClient : BackgroundService
 
     private readonly string _separator = $"{TAIL}{HEAD}";
 
-    private readonly IFiasConnectionService _connection;
-
     private readonly IFiasService _fiasService;
 
     private NetworkStream? _stream;
 
     private string? _lastError;
 
-    public FiasSocketClient(IFiasConnectionService fiasConnectionService, IFiasService fiasService)
+    public FiasSocketClient(IFiasService fiasService)
     {
-        _connection = fiasConnectionService;
         _fiasService = fiasService;
-        _fiasService.SendMessageEvent += Send;
+        _fiasService.FiasSendMessageEvent += SendAsync;
     }
 
     protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (true)
+            await Task.Run(ConnectAsync);
+    }
+
+    private async Task ConnectAsync()
+    {
+        if (_fiasService.CancellationToken.IsCancellationRequested)
         {
-            if (_connection.CancellationToken.IsCancellationRequested)
-                _connection.RefreshCancellationToken();
+            _fiasService.RefreshCancellationToken();
+            await Task.Delay(6000);
+        }
 
-            if (!_connection.IsRunning)
-                continue;
+        if (!_fiasService.IsRunning)
+            return;
 
-            if (GetTcpClient() is not TcpClient tcpClient)
-                continue;
+        if (_fiasService.CancellationToken.IsCancellationRequested)
+            return;
 
-            ChangeStateHandle(true);
+        using TcpClient tcpClient = new();
+        if (!ConnectToFias(tcpClient))
+            return;
 
-            StringBuilder stringBuilder = new();
+        if (_fiasService.CancellationToken.IsCancellationRequested)
+            return;
 
-            try
+        _fiasService.ChangeConnectionStateEventInvoke(true, _fiasService.Hostname, _fiasService.Port);
+
+        StringBuilder stringBuilder = new();
+
+        try
+        {
+            using NetworkStream stream = tcpClient.GetStream();
+            _stream = stream;
+            while (true)
             {
-                using NetworkStream stream = tcpClient.GetStream();
-                _stream = stream;
-                while (true)
+                await Task.Run(async () => await ReadAsync(stream, stringBuilder));
+
+                if (_fiasService.CancellationToken.IsCancellationRequested)
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            _stream = null;
+            _fiasService.ErrorEventInvoke(ex.Message, ex);
+            _fiasService.ChangeConnectionStateEventInvoke(false);
+        }
+    }
+
+    private async Task ReadAsync(NetworkStream stream, StringBuilder stringBuilder)
+    {
+        var buffer = new byte[8192];
+        try
+        {
+            var size = await stream.ReadAsync(buffer, 0, buffer.Length, _fiasService.CancellationToken);
+
+            if (size > 0)
+            {
+                if (size < buffer.Length)
+                    Array.Resize(ref buffer, size);
+
+                var temp = Encoding.Default.GetString(buffer, 0, size);
+                var messages = temp.Split(_separator);
+
+                if (messages.Length == 1 && messages[0].Length > 0)
                 {
-                    var buffer = new byte[8192];
-                    var size = await stream.ReadAsync(buffer, 0, buffer.Length);
-
-                    if (size > 0)
+                    if (messages[0][^1] != TAIL)
                     {
-                        if (size < buffer.Length)
-                            Array.Resize(ref buffer, size);
-
-                        var temp = Encoding.Default.GetString(buffer, 0, size);
-                        var messages = temp.Split(_separator);
-
-                        if (messages.Length == 1 && messages[0].Length > 0)
-                        {
-                            if (messages[0][^1] != TAIL)
-                            {
-                                if (messages[0][0] != HEAD)
-                                    stringBuilder.Append(messages[0]);
-                                else
-                                    stringBuilder.Clear().Append(messages[0][1..]);
-                            }
-                            else
-                            {
-                                var message = FixHead(messages[0], stringBuilder);
-                                MessageHandle(message);
-                                stringBuilder.Clear();
-                            }
-                        }
-                        else if (messages.Length > 1)
-                        {
-                            var message = messages[0].Length != 0 ? FixHead(messages[0], stringBuilder) : stringBuilder.ToString();
-                            MessageHandle(message);
-                            stringBuilder.Clear();
-
-                            for (int i = 1; i < messages.Length - 1; i++)
-                                MessageHandle(messages[i]);
-
-                            message = messages[^1];
-
-                            if (message.Length != 0)
-                            {
-                                if (message[^1] != TAIL)
-                                    stringBuilder.Append(message);
-                                else
-                                    MessageHandle(message[..^1]);
-                            }
-                        }
+                        if (messages[0][0] != HEAD)
+                            stringBuilder.Append(messages[0]);
+                        else
+                            stringBuilder.Clear().Append(messages[0][1..]);
                     }
-
-                    if (_connection.CancellationToken.IsCancellationRequested)
+                    else
                     {
-                        _stream = null;
-                        tcpClient.Close();
-                        ChangeStateHandle(false);
-                        break;
+                        var message = FixHead(messages[0], stringBuilder);
+                        MessageHandle(message);
+                        stringBuilder.Clear();
+                    }
+                }
+                else if (messages.Length > 1)
+                {
+                    var message = messages[0].Length != 0 ? FixHead(messages[0], stringBuilder) : stringBuilder.ToString();
+                    MessageHandle(message);
+                    stringBuilder.Clear();
+
+                    for (int i = 1; i < messages.Length - 1; i++)
+                        MessageHandle(messages[i]);
+
+                    message = messages[^1];
+
+                    if (message.Length != 0)
+                    {
+                        if (message[^1] != TAIL)
+                            stringBuilder.Append(message);
+                        else
+                            MessageHandle(message[..^1]);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                _stream = null;
-                tcpClient.Close();
-                ErrorFromPmsHandle(ex.Message);
-                ChangeStateHandle(false);
-            }
+        }
+        catch (OperationCanceledException)
+        {
+            _stream = null;
+            _fiasService.ChangeConnectionStateEventInvoke(false);
         }
     }
 
@@ -123,68 +140,82 @@ internal class FiasSocketClient : BackgroundService
             _fiasService.UnknownTypeMessageEventInvoke(commonMessage);
     }
 
-    private void ErrorFromPmsHandle(string errorMessage) => _fiasService.ErrorFromPmsMessageEventInvoke(errorMessage);
-
-    private void ErrorToPmsHandle(string errorMessage) => _fiasService.ErrorToPmsMessageEventInvoke(errorMessage);
-
-    private void ChangeStateHandle(bool isConnected) => _fiasService.ChangeStateEventInvoke(isConnected);
-
-    private void Send(string message)
+    private Task SendAsync(string message)
     {
         if (message is null)
-        {
-            ErrorToPmsHandle("The message was not sent because it is null.");
-            return;
-        }
+            throw new ArgumentException("The message was not sent because it is null.");
 
         if (_stream is null)
-        {
-            ErrorToPmsHandle("The message was not sent because the connection to FIAS was not established.");
-            return;
-        }
+            throw new InvalidOperationException("The message was not sent because the connection to FIAS was not established.");
 
         try
         {
             _stream.Write(Encoding.Default.GetBytes(message));
+            return Task.CompletedTask;
         }
         catch (Exception ex)
         {
-            ErrorToPmsHandle(ex.Message);
+            throw new InvalidOperationException(ex.Message, ex);
         }
     }
 
-    private TcpClient? GetTcpClient()
+    private bool ConnectToFias(TcpClient tcpClient)
     {
-        string errorMessage;
+        if (_fiasService.CancellationToken.IsCancellationRequested)
+            return false;
 
-        if (string.IsNullOrWhiteSpace(_connection.Hostname))
-            errorMessage = "Hostname is null or whitespace";
-        else if (_connection.Port < IPEndPoint.MinPort || _connection.Port > IPEndPoint.MaxPort)
-            errorMessage = $"Port {_connection.Port} out of range [{IPEndPoint.MinPort}..{IPEndPoint.MaxPort}]";
-        else
+        if (string.IsNullOrWhiteSpace(_fiasService.Hostname))
         {
-
-            TcpClient tcpClient;
-            try
-            {
-                tcpClient = new();
-                tcpClient.Connect(_connection.Hostname, _connection.Port);
-                _lastError = null;
-                return tcpClient;
-            }
-            catch (Exception ex)
-            {
-                errorMessage = ex.Message;
-            }
+            TrySendError("Hostname is null or whitespace");
+            return false;
         }
 
-        if (_lastError == null || _lastError != errorMessage)
+        if (_fiasService.CancellationToken.IsCancellationRequested)
+            return false;
+
+        if (_fiasService.Port < IPEndPoint.MinPort || _fiasService.Port > IPEndPoint.MaxPort)
         {
-            _lastError = errorMessage;
-            ErrorFromPmsHandle(errorMessage);
+            TrySendError($"Port {_fiasService.Port} out of range [{IPEndPoint.MinPort}..{IPEndPoint.MaxPort}]");
+            return false;
         }
 
-        return null;
+        if (_fiasService.CancellationToken.IsCancellationRequested)
+            return false;
+
+        try
+        {
+            if (!tcpClient.ConnectAsync(_fiasService.Hostname!, _fiasService.Port).Wait(1000, _fiasService.CancellationToken))
+            {
+                TrySendError($"The remote host {_fiasService.Hostname}:{_fiasService.Port} was not found.");
+                return false;
+            }
+
+            _lastError = null;
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+        catch (AggregateException)
+        {
+            TrySendError($"Failed to connect to remote host {_fiasService.Hostname}:{_fiasService.Port}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            TrySendError(ex.Message, ex);
+            return false;
+        }
+    }
+
+    private void TrySendError(string message, Exception? ex = null)
+    {
+        if (_lastError == null || _lastError != message)
+        {
+            _lastError = message;
+            _fiasService.ErrorEventInvoke(message, ex);
+        }
     }
 
     private static string FixHead(string message, StringBuilder stringBuilder)

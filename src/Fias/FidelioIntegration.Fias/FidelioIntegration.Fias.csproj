@@ -15,14 +15,12 @@
     <None Remove="Services\" />
     <None Remove="Services\SocketClient\" />
     <None Remove="Options\" />
-    <None Remove="Services\ConnectionService\" />
     <None Remove="Services\FiasInterface\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Services\SocketClient\" />
     <Folder Include="Options\" />
-    <Folder Include="Services\ConnectionService\" />
     <Folder Include="Services\FiasInterface\" />
   </ItemGroup>
   <ItemGroup>
