@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1706.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0405C81F-DC7C-4CD3-B464-3CB7F6931587}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,9 +14,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{29E89A90-057D-4D1D-88BF-8E412FDAA9CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Fias.Entities", "Fias\Libraries\Entities\FidelioIntegration.Fias.Entities\FidelioIntegration.Fias.Entities.csproj", "{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelioIntegration.Fias.Entities", "Fias\Libraries\Entities\FidelioIntegration.Fias.Entities\FidelioIntegration.Fias.Entities.csproj", "{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Fias", "Fias\FidelioIntegration.Fias\FidelioIntegration.Fias.csproj", "{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FidelioIntegration.Fias", "Fias\FidelioIntegration.Fias\FidelioIntegration.Fias.csproj", "{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Opera", "Opera", "{4434BB9F-6EA4-41A5-9CD2-26620C184761}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{CBBBC48C-1B2D-47FC-83E1-9B65205D91FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{3B4180C4-E423-4B99-A20C-EF4464DC59E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Opera.Domain.Entities.Tables", "Opera\Domain\Entities\FidelioIntegration.Opera.Domain.Entities.Tables\FidelioIntegration.Opera.Domain.Entities.Tables.csproj", "{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Opera.Domain.Entities.Views", "Opera\Domain\Entities\FidelioIntegration.Opera.Domain.Entities.Views\FidelioIntegration.Opera.Domain.Entities.Views.csproj", "{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +34,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{87EC094C-A122-4D16-85BF-AF15BAE5C777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87EC094C-A122-4D16-85BF-AF15BAE5C777}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87EC094C-A122-4D16-85BF-AF15BAE5C777}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87EC094C-A122-4D16-85BF-AF15BAE5C777}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -36,20 +42,31 @@ Global
 		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {A547077B-6247-4D38-A6C8-4DB9B60F983A}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{FD17A51C-5AD6-43DD-9835-600576029EEC} = {0405C81F-DC7C-4CD3-B464-3CB7F6931587}
-		{87EC094C-A122-4D16-85BF-AF15BAE5C777} = {FD17A51C-5AD6-43DD-9835-600576029EEC}
 		{ECC15BD2-39A3-4198-9F8F-F91205F97845} = {0405C81F-DC7C-4CD3-B464-3CB7F6931587}
 		{E69A4690-6AF9-466C-8E6F-2DAFBE377AE6} = {ECC15BD2-39A3-4198-9F8F-F91205F97845}
 		{29E89A90-057D-4D1D-88BF-8E412FDAA9CD} = {E69A4690-6AF9-466C-8E6F-2DAFBE377AE6}
 		{FD9343EA-3DE2-4DCF-9F7F-C1EE6E46D9D9} = {29E89A90-057D-4D1D-88BF-8E412FDAA9CD}
 		{A3F3E588-EFEF-4F6A-9DD2-97A641F0AB19} = {ECC15BD2-39A3-4198-9F8F-F91205F97845}
+		{4434BB9F-6EA4-41A5-9CD2-26620C184761} = {0405C81F-DC7C-4CD3-B464-3CB7F6931587}
+		{CBBBC48C-1B2D-47FC-83E1-9B65205D91FE} = {4434BB9F-6EA4-41A5-9CD2-26620C184761}
+		{3B4180C4-E423-4B99-A20C-EF4464DC59E7} = {CBBBC48C-1B2D-47FC-83E1-9B65205D91FE}
+		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5} = {3B4180C4-E423-4B99-A20C-EF4464DC59E7}
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D} = {3B4180C4-E423-4B99-A20C-EF4464DC59E7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A547077B-6247-4D38-A6C8-4DB9B60F983A}
 	EndGlobalSection
 EndGlobal
