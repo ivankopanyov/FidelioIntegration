@@ -1,6 +1,6 @@
 ﻿namespace FidelioIntegration.Opera.Domain;
 
-public abstract class OperaDbContext : DbContext
+public abstract class OperaDbContextBase : DbContext
 {
     private static ISet<Type>? _types;
 
