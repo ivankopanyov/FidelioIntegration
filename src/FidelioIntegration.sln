@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{3B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Opera.Domain.Entities.Tables", "Opera\Domain\Entities\FidelioIntegration.Opera.Domain.Entities.Tables\FidelioIntegration.Opera.Domain.Entities.Tables.csproj", "{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FidelioIntegration.Opera.Domain.Entities.Views", "Opera\Domain\Entities\FidelioIntegration.Opera.Domain.Entities.Views\FidelioIntegration.Opera.Domain.Entities.Views.csproj", "{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{CBBBC48C-1B2D-47FC-83E1-9B65205D91FE} = {4434BB9F-6EA4-41A5-9CD2-26620C184761}
 		{3B4180C4-E423-4B99-A20C-EF4464DC59E7} = {CBBBC48C-1B2D-47FC-83E1-9B65205D91FE}
 		{4D82280D-45EF-4ADF-9B61-5BAFA0275CD5} = {3B4180C4-E423-4B99-A20C-EF4464DC59E7}
+		{A9BCA814-4FF8-4551-B78F-DD59F9713D2D} = {3B4180C4-E423-4B99-A20C-EF4464DC59E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A547077B-6247-4D38-A6C8-4DB9B60F983A}
